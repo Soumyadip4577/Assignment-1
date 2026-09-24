@@ -414,11 +414,29 @@ export default function App() {
           </View>
 
           {competition.isUserRegistered ? (
-            <View style={styles.confirmationBox}>
-              <View style={styles.checkCircle}>
-                <Text style={styles.checkText}>✓</Text>
+            <View style={styles.registeredWrapper}>
+              <View style={styles.confirmationBox}>
+                <View style={styles.checkCircle}>
+                  <Text style={styles.checkText}>✓</Text>
+                </View>
+                <Text style={styles.confirmationText}>You are registered</Text>
               </View>
-              <Text style={styles.confirmationText}>You are registered</Text>
+
+              <Pressable
+                onPress={handleCancel}
+                disabled={submitting}
+                style={({ pressed }) => [
+                  styles.secondaryButton,
+                  pressed && styles.pressed,
+                  submitting && styles.disabledButton,
+                ]}
+              >
+                {submitting ? (
+                  <ActivityIndicator color="#0f172a" size="small" />
+                ) : (
+                  <Text style={styles.secondaryButtonText}>Cancel registration</Text>
+                )}
+              </Pressable>
             </View>
           ) : (
             <Pressable
@@ -941,6 +959,9 @@ const styles = StyleSheet.create({
     color: '#0f172a',
     fontWeight: '700',
   },
+  registeredWrapper: {
+    gap: 12,
+  },
   confirmationBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -991,6 +1012,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
   },
+  secondaryButton: {
+    backgroundColor: '#f8fafc',
+    borderRadius: 16,
+    paddingVertical: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#dfe8f1',
+    shadowColor: '#0f172a',
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 1,
+  },
   disabledButton: {
     backgroundColor: '#c4b5fd',
     shadowOpacity: 0,
@@ -999,6 +1034,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '800',
+  },
+  secondaryButtonText: {
+    color: '#0f172a',
+    fontSize: 15,
+    fontWeight: '700',
   },
   pressed: {
     opacity: 0.92,

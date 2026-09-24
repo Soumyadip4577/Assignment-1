@@ -81,6 +81,15 @@ router.post('/:slug/register', async (req, res) => {
       return res.status(400).json({ message: 'You are already registered.' });
     }
 
+    const staleRegistration = await Registration.findOne({
+      competitionId: competition._id,
+      userId,
+    });
+
+    if (staleRegistration && staleRegistration.status !== 'registered') {
+      await Registration.deleteOne({ _id: staleRegistration._id });
+    }
+
     const currentCount = await Registration.countDocuments({
       competitionId: competition._id,
       status: 'registered',
@@ -138,8 +147,7 @@ router.delete('/:slug/register', async (req, res) => {
       return res.status(400).json({ message: 'You are not registered.' });
     }
 
-    registration.status = 'cancelled';
-    await registration.save();
+    await Registration.deleteOne({ _id: registration._id });
 
     competition.registeredCount = Math.max((competition.registeredCount || 1) - 1, 0);
     await competition.save();
